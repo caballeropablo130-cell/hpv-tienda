@@ -1,1 +1,349 @@
-index.html
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HPV | Tienda online</title>
+<style>
+:root {
+  --main: #49372e;
+  --accent: #b85c38;
+  --bg: #faf6f0;
+  --text: #29231f;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+header {
+  background: white;
+  padding: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+}
+.logo {
+  font-size: 28px;
+  font-weight: bold;
+  color: var(--main);
+  letter-spacing: 3px;
+}
+button {
+  border: 0;
+  border-radius: 9px;
+  padding: 12px 16px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.hero {
+  background: linear-gradient(120deg,#49372e,#b85c38);
+  color: white;
+  text-align: center;
+  padding: 65px 20px;
+}
+.hero h1 { font-size: 42px; }
+.hero p { font-size: 18px; }
+.hero button {
+  background: white;
+  color: var(--main);
+}
+main {
+  max-width: 1100px;
+  margin: auto;
+  padding: 35px 18px;
+}
+.tools {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+input, select {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+input { flex: 1; min-width: 180px; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+  gap: 20px;
+}
+.product {
+  background: white;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 3px 12px #00000010;
+}
+.photo {
+  height: 180px;
+  background: #f0e3d7;
+  display: grid;
+  place-items: center;
+  font-size: 65px;
+}
+.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.price {
+  padding: 12px 16px 0;
+  color: var(--accent);
+  font-size: 22px;
+  font-weight: bold;
+}
+.details { padding: 15px; }
+.details h3 { margin-top: 0; }
+.add {
+  background: var(--accent);
+  color: white;
+  width: 100%;
+}
+footer {
+  background: var(--main);
+  color: white;
+  text-align: center;
+  padding: 30px;
+}
+.cart {
+  position: fixed;
+  inset: 0;
+  background: #0008;
+  display: none;
+  z-index: 10;
+}
+.cart-content {
+  background: white;
+  width: min(420px,100%);
+  height: 100%;
+  margin-left: auto;
+  padding: 22px;
+  overflow: auto;
+}
+.cart-line {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #ddd;
+  padding: 12px 0;
+}
+.checkout {
+  background: #16834b;
+  color: white;
+  width: 100%;
+  margin-top: 12px;
+}
+@media(max-width:500px) {
+  .hero h1 { font-size: 32px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">HPV</div>
+  <button onclick="openCart()">🛒 Carrito (<span id="count">0</span>)</button>
+</header>
+
+<section class="hero">
+  <h1>Bienvenidos a HPV</h1>
+  <p>Ropa, calzado y productos variados para todos.</p>
+  <button onclick="document.getElementById('productos').scrollIntoView()">
+    Ver productos
+  </button>
+</section>
+
+<main id="productos">
+  <h2>Nuestros productos</h2>
+  <p>Encontrá lo que estás buscando.</p>
+
+  <div class="tools">
+    <input id="search" placeholder="Buscar productos..." oninput="render()">
+    <select id="category" onchange="render()">
+      <option value="Todos">Todas las categorías</option>
+      <option>Ropa de mujer</option>
+      <option>Ropa de hombre</option>
+      <option>Ropa infantil</option>
+      <option>Calzado</option>
+      <option>Carteras y mochilas</option>
+      <option>Perfumes</option>
+      <option>Belleza</option>
+      <option>Bijouterie y accesorios</option>
+      <option>Hogar</option>
+      <option>Juguetes</option>
+      <option>Electrónica</option>
+      <option>Temporada</option>
+      <option>Varios</option>
+    </select>
+  </div>
+
+  <div class="grid" id="grid"></div>
+</main>
+
+<footer>
+  <h2>HPV</h2>
+  <p>Tu tienda online de ropa, calzado y productos variados.</p>
+  <p>WhatsApp: 091 281 020 | 092 483 709</p>
+</footer>
+
+<div class="cart" id="cart">
+  <div class="cart-content">
+    <button onclick="closeCart()">Cerrar ✕</button>
+    <h2>Mi carrito</h2>
+    <div id="items"></div>
+    <h3 id="total">Total: $ 0</h3>
+    <button class="checkout" onclick="sendOrder(0)">Pedir al 091 281 020</button>
+    <button class="checkout" onclick="sendOrder(1)">Pedir al 092 483 709</button>
+  </div>
+</div>
+
+<script>
+// EDITÁ ESTA LISTA PARA AGREGAR TUS PRODUCTOS.
+// Para las fotos, guardá los archivos de imagen junto a index.html
+// y escribí el nombre en photo, por ejemplo: "remera.jpg".
+const products = [
+  {
+    id: 1,
+    name: "Producto de ejemplo 1",
+    category: "Ropa de mujer",
+    description: "Descripción del producto.",
+    price: 450,
+    emoji: "👚",
+    photo: ""
+  },
+  {
+    id: 2,
+    name: "Producto de ejemplo 2",
+    category: "Calzado",
+    description: "Descripción del producto.",
+    price: 1200,
+    emoji: "👟",
+    photo: ""
+  },
+  {
+    id: 3,
+    name: "Producto de ejemplo 3",
+    category: "Varios",
+    description: "Descripción del producto.",
+    price: 590,
+    emoji: "🎁",
+    photo: ""
+  }
+];
+
+const whatsapp = ["598091281020","598092483709"];
+let cart = {};
+
+function money(n) {
+  return "$ " + Number(n).toLocaleString("es-UY");
+}
+
+function render() {
+  const q = document.getElementById("search").value.toLowerCase();
+  const cat = document.getElementById("category").value;
+
+  const filtered = products.filter(p =>
+    (cat === "Todos" || p.category === cat) &&
+    (p.name + " " + p.description).toLowerCase().includes(q)
+  );
+
+  document.getElementById("grid").innerHTML = filtered.length
+    ? filtered.map(p => `
+      <article class="product">
+        <div class="photo">
+          ${p.photo
+            ? `<img src="${p.photo}" alt="${p.name}">`
+            : p.emoji}
+        </div>
+        <div class="price">${money(p.price)}</div>
+        <div class="details">
+          <small>${p.category}</small>
+          <h3>${p.name}</h3>
+          <p>${p.description}</p>
+          <button class="add" onclick="add(${p.id})">
+            Agregar al carrito
+          </button>
+        </div>
+      </article>
+    `).join("")
+    : "<p>No se encontraron productos.</p>";
+}
+
+function add(id) {
+  cart[id] = (cart[id] || 0) + 1;
+  updateCart();
+  openCart();
+}
+
+function change(id, amount) {
+  cart[id] = (cart[id] || 0) + amount;
+  if (cart[id] <= 0) delete cart[id];
+  updateCart();
+}
+
+function updateCart() {
+  document.getElementById("count").textContent =
+    Object.values(cart).reduce((a,b) => a+b, 0);
+
+  const selected = products.filter(p => cart[p.id]);
+  document.getElementById("items").innerHTML = selected.length
+    ? selected.map(p => `
+      <div class="cart-line">
+        <div>${p.name}<br>${money(p.price * cart[p.id])}</div>
+        <div>
+          <button onclick="change(${p.id},-1)">−</button>
+          ${cart[p.id]}
+          <button onclick="change(${p.id},1)">+</button>
+        </div>
+      </div>
+    `).join("")
+    : "<p>Tu carrito está vacío.</p>";
+
+  const total = selected.reduce((s,p) => s+p.price*cart[p.id],0);
+  document.getElementById("total").textContent = "Total: " + money(total);
+}
+
+function openCart() {
+  document.getElementById("cart").style.display = "block";
+}
+
+function closeCart() {
+  document.getElementById("cart").style.display = "none";
+}
+
+function sendOrder(numberIndex) {
+  const selected = products.filter(p => cart[p.id]);
+  if (!selected.length) {
+    alert("El carrito está vacío.");
+    return;
+  }
+
+  const lines = selected.map(p =>
+    `• ${p.name} x${cart[p.id]} - ${money(p.price*p.price/cart[p.id]*cart[p.id])}`
+  );
+  const total = selected.reduce((s,p) => s+p.price*cart[p.id],0);
+  const message = encodeURIComponent(
+    "Hola, quiero realizar este pedido en HPV:\n\n" +
+    lines.join("\n") +
+    "\n\nTotal: " + money(total) +
+    "\n¿Me confirman disponibilidad y entrega?"
+  );
+
+  window.open(
+    "https://wa.me/" + whatsapp[numberIndex] + "?text=" + message,
+    "_blank"
+  );
+}
+
+render();
+updateCart();
+</script>
+</body>
+</html>
+
