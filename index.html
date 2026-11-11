@@ -202,6 +202,8 @@ footer {
     <button class="checkout" onclick="sendOrder(0)">Pedir al 091 281 020</button>
     <button class="checkout" onclick="sendOrder(1)">Pedir al 092 483 709</button>
   </div>
+</div><div id="zoomModal" onclick="this.style.display='none'" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9999; place-items:center; padding:20px; cursor:pointer;">
+  <img id="zoomImg" style="max-width:95%; max-height:90vh; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
 </div>
 
 <script>
@@ -243,6 +245,9 @@ let cart = {};
 
 function money(n) {
   return "$ " + Number(n).toLocaleString("es-UY");
+}function openZoom(src) {
+  document.getElementById("zoomImg").src = src;
+  document.getElementById("zoomModal").style.display = "grid";
 }
 
 function render() {
@@ -259,7 +264,7 @@ function render() {
       <article class="product">
         <div class="photo">
           ${p.photo
-            ? `<img src="${p.photo}" alt="${p.name}">`
+            ? `<img src="${p.photo}" alt="${p.name}">`onclick="openZoom("${p.photo}")"style=cursor:pointer;">
             : p.emoji}
         </div>
         <div class="price">${money(p.price)}</div>
