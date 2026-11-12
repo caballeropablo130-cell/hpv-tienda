@@ -264,7 +264,7 @@ function render() {
       <article class="product">
         <div class="photo">
           ${p.photo
-            ? `<img src="${p.photo}" alt="${p.name}">`onclick="openZoom("${p.photo}")"style=cursor:pointer;">
+            ? `<img src="${p.photo}" alt="${p.name}" onclick="openZoom('${p.photo}')" style="cursor:pointer;">`
             : p.emoji}
         </div>
         <div class="price">${money(p.price)}</div>
