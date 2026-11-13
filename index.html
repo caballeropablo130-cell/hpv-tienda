@@ -295,7 +295,7 @@ function render() {
     (p.name + " " + p.description).toLowerCase().includes(q)
   );
 
-  document.getElementById("grid").innerHTML = filtered.length
+  document.getElementById("productos").innerHTML = filtered.length
     ? filtered.map(p => `
       <article class="product">
         <div class="photo">
