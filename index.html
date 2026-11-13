@@ -367,7 +367,7 @@ function sendOrder(numberIndex) {
   }
 
   const lines = selected.map(p =>
-    • ${p.name} x${cart[p.id]} - ${money(p.price*cart[p.id])}
+   ' • ${p.name} x${cart[p.id]} - ${money(p.price*cart[p.id])}'
   );
   const total = selected.reduce((s,p) => s+p.price*cart[p.id],0);
   const message = encodeURIComponent(
